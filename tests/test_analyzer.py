@@ -101,11 +101,12 @@ def test_json_regeneration():
     with patch('analyzer.requests.post', side_effect=[response('invalid'), response(extraction().model_dump_json())]) as post:
         assert SenseNovaClient('fake').generate('extract', {}, Extraction)
         assert post.call_count == 2
+        assert post.call_args.args[0] == 'https://token.sensenova.ai/v1/chat/completions'
 
 
 def test_auth_error_sanitized():
     with patch('analyzer.requests.post', return_value=response('secret', 401)):
-        with pytest.raises(AnalysisError, match='invalid or expired'):
+        with pytest.raises(AnalysisError, match='HTTP 401'):
             SenseNovaClient('fake').generate('extract', {}, Extraction)
 
 

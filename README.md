@@ -64,14 +64,14 @@ Alternatively, copy `.env.example` to `.env` and fill in your key before startin
 
 ## SenseNova configuration
 
-Obtain a key from [SenseNova Console](https://platform.sensenova.cn/console). Check that your account has access to the model. The implementation follows the [official SenseNova API guide](https://github.com/OpenSenseNova/SenseNova6.8/blob/main/API.md):
+Obtain a key from [SenseNova Console](https://platform.sensenova.ai/console/keys). Check that your account has access to the model. This app uses the same international SenseNova endpoint as the working Study Pack project:
 
-- Endpoint: `https://token.sensenova.cn/v1/chat/completions`
+- Endpoint: `https://token.sensenova.ai/v1/chat/completions`
 - Authentication: bearer API key
 - Default model: `sensenova-6.8-flash-lite` (preview; configurable through SENSENOVA_MODEL in server secrets)
 - Non-streaming response: `choices[0].message.content`
 
-This adapter targets the documented token endpoint, not the legacy access-key/secret-key API. A valid key and available model are required for real analysis. Provider availability, quotas and costs depend on your account.
+This adapter targets the international `.ai` token endpoint. Keys from `.ai` and `.cn` platforms should not be assumed interchangeable. A valid key and available model are required for real analysis. Provider availability, quotas and costs depend on your account.
 
 The app requests JSON through schema instructions and validates it with Pydantic; it does not assume the endpoint supports a provider-enforced `response_format`. Malformed JSON gets one regeneration attempt. Ungrounded evidence is rejected. HTTP 429/5xx receive bounded retries; authentication and configuration errors are displayed without exposing provider response bodies or secrets. Reasoning fields are ignored.
 

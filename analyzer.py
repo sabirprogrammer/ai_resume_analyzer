@@ -10,7 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from utils import clean_text, contains_phrase, normalize_skill, validate_inputs
 
 DEFAULT_MODEL = 'sensenova-6.8-flash-lite'
-API_URL = 'https://token.sensenova.cn/v1/chat/completions'
+API_URL = 'https://token.sensenova.ai/v1/chat/completions'
 WEIGHTS = {'skills': 35, 'keywords': 25, 'experience': 20, 'education': 10, 'quality': 10}
 
 
@@ -82,7 +82,7 @@ class SenseNovaClient:
                     continue
             if response.status_code != 200:
                 message = {400: 'SenseNova rejected the request. Check the model and account configuration.',
-                           401: 'SenseNova API key is invalid or expired.',
+                           401: 'SenseNova rejected the API key (HTTP 401). Check that it belongs to platform.sensenova.ai and is active.',
                            403: 'Your SenseNova account does not have access to this model.',
                            404: 'SenseNova model was not found. Select a model enabled for your account.',
                            429: 'SenseNova rate limit reached. Please try again later.'}.get(
