@@ -58,9 +58,9 @@ python -m pip install -r requirements.txt
 python -m streamlit run app.py
 ```
 
-Open `http://localhost:8501`. Enter your SenseNova API key in the sidebar, upload a resume, paste a detailed job description, enable the data-sharing checkbox and click **Analyze my resume**.
+Configure your key in `.streamlit/secrets.toml` using the secrets example below. Open `http://localhost:8501`, upload a resume, paste a detailed job description, enable the data-sharing checkbox and click **Analyze my resume**. Visitors are never asked for an API key.
 
-Alternatively, copy `.env.example` to `.env` and fill in your key before starting. Never commit `.env` or real credentials. The sidebar key overrides server configuration. Streamlit secrets take precedence over environment variables.
+Alternatively, copy `.env.example` to `.env` and fill in your key before starting. Never commit `.env` or real credentials. Credentials and model settings are read only from server configuration. Streamlit secrets take precedence over environment variables.
 
 ## SenseNova configuration
 
@@ -68,7 +68,7 @@ Obtain a key from [SenseNova Console](https://platform.sensenova.cn/console). Ch
 
 - Endpoint: `https://token.sensenova.cn/v1/chat/completions`
 - Authentication: bearer API key
-- Default model: `sensenova-6.8-flash-lite` (preview; configurable in settings)
+- Default model: `sensenova-6.8-flash-lite` (preview; configurable through SENSENOVA_MODEL in server secrets)
 - Non-streaming response: `choices[0].message.content`
 
 This adapter targets the documented token endpoint, not the legacy access-key/secret-key API. A valid key and available model are required for real analysis. Provider availability, quotas and costs depend on your account.
@@ -104,14 +104,14 @@ The same validated extraction always gives the same score. AI extraction and exp
 
 1. Open [Streamlit Community Cloud](https://share.streamlit.io/) and connect GitHub.
 2. Create an app for `sabirprogrammer/ai_resume_analyzer`, branch `main`, entry file `app.py`.
-3. In app secrets, optionally add:
+3. In app secrets, add:
 
 ```toml
 SENSENOVA_API_KEY = "your_real_key"
 SENSENOVA_MODEL = "sensenova-6.8-flash-lite"
 ```
 
-4. Deploy. If no server key is set, each visitor supplies a key in the sidebar. A shared server key lets all visitors consume that account's quota; for a public demo, prefer visitor-supplied keys.
+4. Save secrets and deploy. The app reads the key automatically. There are no API key or model fields in the interface. If the key is missing, analysis shows a configuration message for the app owner.
 
 ## Tests
 

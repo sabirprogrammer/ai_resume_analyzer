@@ -62,7 +62,7 @@ class SenseNovaClient:
     """Only this adapter knows SenseNova's HTTP contract."""
     def __init__(self, api_key: str, model: str = DEFAULT_MODEL):
         if not api_key.strip():
-            raise AnalysisError('Add your SenseNova API key in settings or server secrets.')
+            raise AnalysisError('Analysis is not configured yet. The app owner needs to add SENSENOVA_API_KEY in Streamlit Secrets.')
         if not model.strip():
             raise AnalysisError('Enter a SenseNova model identifier.')
         self.api_key, self.model = api_key.strip(), model.strip()

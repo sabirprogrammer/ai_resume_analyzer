@@ -51,15 +51,12 @@ def bullets(items):
         st.caption('No items reported.')
 
 
+server_key = setting('SENSENOVA_API_KEY')
+model = setting('SENSENOVA_MODEL', DEFAULT_MODEL)
+
 with st.sidebar:
     st.markdown('### ◈ Resume Analyzer')
     st.caption('YOUR NEXT ROLE, WITH CLARITY')
-    st.divider()
-    st.markdown('**Connection settings**')
-    server_key = setting('SENSENOVA_API_KEY')
-    entered_key = st.text_input('SenseNova API key', type='password', help='Optional when a key is configured on the server.')
-    model = st.text_input('Model', value=setting('SENSENOVA_MODEL', DEFAULT_MODEL))
-    st.caption('API key configured' if server_key or entered_key else 'Add a key before analyzing')
     st.divider()
     st.markdown('**How it works**')
     st.write('1. Upload your resume\n2. Paste the target job\n3. Review your match and next steps')
@@ -96,7 +93,7 @@ if st.button('Analyze my resume  →', type='primary', use_container_width=True)
             raise InputError('Please agree to send the text to SenseNova before continuing.')
         resume = extract_resume_text(file_data, upload.name)
         resume, cleaned_job = validate_inputs(resume, job)
-        client = SenseNovaClient(entered_key or server_key, model)
+        client = SenseNovaClient(server_key, model)
         with st.spinner('Reading evidence, comparing requirements and preparing recommendations...'):
             result = analyze_resume(client, resume, cleaned_job)
         st.session_state.update(result=result, fingerprint=fingerprint, resume_text=resume)
