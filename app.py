@@ -78,6 +78,46 @@ h1,h2,h3,h4 {letter-spacing:-.04em;color:var(--ink);}
 .footer {text-align:center;color:#a499b1;font-size:10px;letter-spacing:.4px;margin-top:38px;}
 @media(max-width:800px) {.block-container {padding:1.5rem 1rem;}.hero {grid-template-columns:1fr;padding:25px;}.document-scene {display:none;}.hero h1 {font-size:33px;}.topline {margin-bottom:20px;}.section-header span {display:none;}.score-row {padding:18px;gap:15px;}.score-copy h3 {font-size:20px;}}
 @media(prefers-reduced-motion:no-preference) {.hero {animation:enter .45s ease-out;}@keyframes enter {from {opacity:0;transform:translateY(6px)}to {opacity:1;transform:translateY(0)}}}
+
+/* Refined workspace surfaces and accessible report hierarchy. */
+.stApp {background:radial-gradient(ellipse at 85% 0%,#efe8fb 0,transparent 42%),#f8f7fc;}
+.hero {background:radial-gradient(ellipse at 88% 20%,#62519c 0,transparent 55%),linear-gradient(120deg,#25243d,#383151);border:1px solid #4d4564;box-shadow:0 16px 40px #30254416;position:relative;padding:40px 42px;}
+.hero h1 {color:#fff;font-size:clamp(32px,3.5vw,48px);}
+.hero h1 span {color:#d2b9ff;}
+.hero .eyebrow {color:#c1abd9;}
+.hero p {color:#c8c0d7;}
+.hero-tags {color:#ddd4e9;gap:10px;}
+.hero-tags span {border:1px solid #84739e50;background:#ffffff08;padding:6px 10px;border-radius:30px;}
+.document {box-shadow:0 25px 50px #100b2438;}
+.float-label {box-shadow:0 12px 28px #0e092326;}
+.document-scene {min-height:245px;}
+.document-scene:before {content:'';position:absolute;width:235px;height:235px;border:1px solid #ab95d338;border-radius:50%;}
+.document-scene:after {content:'';position:absolute;width:285px;height:285px;border:1px solid #ab95d31a;border-radius:50%;pointer-events:none;}
+.topline {color:#6d627e;}
+[data-testid="stVerticalBlockBorderWrapper"] > div {box-shadow:0 5px 20px #45306605;}
+[data-testid="stFileUploaderDropzone"] {min-height:173px;}
+.card-title small {color:#746a80;}
+.feature {box-shadow:0 5px 18px #45306605;position:relative;overflow:hidden;}
+.feature:after {content:'';width:75px;height:75px;position:absolute;right:-24px;top:-25px;border-radius:50%;background:#f4effc;}
+.feature p {color:#766c81;}.feature .icon {font-size:19px;}
+[data-testid="stMetric"] {box-shadow:0 5px 20px #45306606;border-top:3px solid #c4aceb;}
+[data-testid="stMetricLabel"] {color:#6f637e;}
+[data-testid="stDownloadButton"] button {background:#ede6fa;color:#6642ab;border:1px solid #d5c5ec;border-radius:12px;min-height:46px;font-weight:650;}
+.step-track {display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:2px 0 20px;}
+.step {display:flex;align-items:center;gap:10px;border:1px solid #e7e0ee;border-radius:12px;padding:13px 16px;background:#fff;color:#81748d;font-size:12px;}
+.step i {font-style:normal;border-radius:50%;background:#f0ebf7;width:25px;height:25px;display:grid;place-items:center;font-weight:650;}
+.step.done {background:#f2edf9;border-color:#d9caed;color:#684796;}.step.done i {background:#7c59bb;color:white;}
+.rubric {background:white;border:1px solid #e8e1ef;border-radius:16px;padding:6px 22px;margin-top:12px;}
+.rubric-row {padding:16px 0;border-bottom:1px solid #f0ebf5;}.rubric-row:last-child {border-bottom:0;}
+.rubric-top {display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:9px;color:#574b66;}
+.rubric-top b {color:#7752b4;}.rubric-track {background:#eee9f5;border-radius:10px;height:7px;overflow:hidden;}
+.rubric-fill {height:100%;border-radius:10px;background:linear-gradient(90deg,#b392e0,#7653b4);}
+.rubric-foot {font-size:10px;color:#82738f;margin-top:6px;}
+.assessment {background:linear-gradient(115deg,#f0e9fc,#f8f4ff);border:1px solid #dfd0ef;border-left:4px solid #9872cd;border-radius:14px;padding:22px 25px;font-size:14px;line-height:1.85;color:#635171;margin:12px 0 22px;}
+.assessment .eyebrow {margin-bottom:8px;}
+.quality-item {display:flex;align-items:center;gap:10px;padding:11px 15px;border:1px solid #e8e2ef;border-radius:10px;margin:7px 0;background:white;font-size:13px;color:#655771;}
+.quality-item b {background:#edf5ee;color:#568064;border-radius:6px;padding:2px 7px;}.quality-item.review b {background:#fcf0e4;color:#9c7145;}
+@media(max-width:800px) {.hero {padding:28px;}.step-track {gap:6px;}.step {font-size:10px;padding:10px 8px;gap:6px;}.step i {width:21px;height:21px;flex-shrink:0;}.rubric {padding:5px 15px;}}
 </style>''', unsafe_allow_html=True)
 
 
@@ -138,6 +178,9 @@ with right:
 consent = st.checkbox('I agree to send the extracted resume text and job description to SenseNova for analysis.')
 st.caption('Your file is processed in memory. Analysis sends extracted text to SenseNova under its data policies.')
 
+steps = [('Resume uploaded', bool(upload)), ('Job description added', len(job.strip()) >= 100 and len(job.split()) >= 20), ('Ready to analyze', bool(upload) and len(job.strip()) >= 100 and len(job.split()) >= 20 and consent)]
+st.markdown('<div class="step-track">' + ''.join(f'<div class="step {"done" if ready else ""}"><i>{"✓" if ready else index}</i>{title}</div>' for index, (title, ready) in enumerate(steps, 1)) + '</div>', unsafe_allow_html=True)
+
 file_data = upload.getvalue() if upload else b''
 fingerprint = hashlib.sha256(file_data + job.encode() + model.encode()).hexdigest()
 if st.session_state.get('fingerprint') != fingerprint:
@@ -188,9 +231,13 @@ if result:
             st.markdown('#### Preferred skills not evidenced')
             chips(result['preferred_skills_missing'], True)
         st.markdown('#### Score breakdown')
-        st.dataframe([{'Category': k.title(), 'Category match': 'Not applicable' if v['rate'] is None else f"{v['rate']:g}%",
-                       'Effective weight': f"{v['effective_weight']:g}%", 'Points / 100': v['points']}
-                      for k, v in result['score_breakdown'].items()], hide_index=True, use_container_width=True)
+        rows = []
+        for category, values in result['score_breakdown'].items():
+            rate = values['rate']
+            label = 'Not applicable' if rate is None else f'{rate:g}% match'
+            width = 0 if rate is None else max(0, min(100, rate))
+            rows.append(f'<div class="rubric-row"><div class="rubric-top"><span>{category.title()}</span><b>{label}</b></div><div class="rubric-track"><div class="rubric-fill" style="width:{width}%"></div></div><div class="rubric-foot">{values["points"]:g} points earned · {values["effective_weight"]:g}% effective weight</div></div>')
+        st.markdown('<div class="rubric">' + ''.join(rows) + '</div>', unsafe_allow_html=True)
     with keywords:
         x, y = st.columns(2)
         with x:
@@ -201,8 +248,7 @@ if result:
             chips(result['ats_keywords_missing'], True)
         st.info('Keyword checks use literal phrases with word boundaries. Include missing terms only when they truthfully describe your skills.')
     with advice:
-        st.markdown('#### Final assessment')
-        st.write(result['final_assessment'])
+        st.markdown('<div class="assessment"><div class="eyebrow">THE BIG PICTURE</div>' + escape(result['final_assessment']) + '</div>', unsafe_allow_html=True)
         x, y = st.columns(2)
         with x:
             st.markdown('#### Strengths')
@@ -221,7 +267,7 @@ if result:
                     st.dataframe(entries, hide_index=True, use_container_width=True)
         st.markdown('#### Text quality checks')
         for check in result['quality_checks']:
-            st.write(('✓ ' if check['passed'] else '○ ') + check['check'])
+            st.markdown(f'<div class="quality-item {"" if check["passed"] else "review"}"><b>{"✓" if check["passed"] else "○"}</b>{escape(check["check"])}</div>', unsafe_allow_html=True)
         st.caption('Each check has equal weight. These simple English-text heuristics do not assess layout, columns or actual ATS parsing.')
         with st.expander('Extracted resume text'):
             st.text(st.session_state['resume_text'])
